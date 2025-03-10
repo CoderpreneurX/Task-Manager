@@ -15,7 +15,7 @@ interface Task {
   status: "pending" | "completed";
 }
 
-const TasksPage = () => {
+export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +38,6 @@ const TasksPage = () => {
 
   return (
       <div className="flex">
-        <Sidebar />
         <div className="flex flex-col items-center justify-center min-h-screen p-6 w-full">
           <div className="w-full max-w-2xl space-y-6">
             <Card>
@@ -84,5 +83,3 @@ const TasksPage = () => {
       </div>
   );
 }
-
-export default Object.assign(TasksPage, {withSidebar: true});
