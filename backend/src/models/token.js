@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Token.init({
-    userId: DataTypes.UUID,
+    userId: DataTypes.INTEGER,
     code: DataTypes.STRING,
     purpose: DataTypes.ENUM("email_verification", "password_reset"),
     createdAt: DataTypes.DATE
