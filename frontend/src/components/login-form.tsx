@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner"; // Import Sonner's toast
 import API from "@/utils/api";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import {
   Card,
   CardContent,
