@@ -6,6 +6,7 @@ import { toast, Toaster } from "sonner";
 import API from "@/utils/api";
 import Button from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Sidebar from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProtectedRoute from "@/components/protectedRoute";
 import ActionMenu from "@/components/ui/actionMenu";
@@ -51,10 +52,10 @@ export default function TasksPage() {
   };
 
   const handleMarkAsComplete = async (task: Task) => {
-    console.log(`Marking ${task}`)
-    const taskStatus = task.status === "completed" ? "pending" : "completed"
+    console.log(`Marking ${task}`);
+    const taskStatus = task.status === "completed" ? "pending" : "completed";
     try {
-      await API.patch(`/tasks/${task.id}/status/`, { status: taskStatus});
+      await API.patch(`/tasks/${task.id}/status/`, { status: taskStatus });
 
       setTasks((prevTasks) =>
         prevTasks.map((t) =>
@@ -84,66 +85,79 @@ export default function TasksPage() {
 
   return (
     <ProtectedRoute>
-      <div className="flex flex-col items-center min-h-screen p-6 w-full">
-        <Toaster position="top-right" />
+      <div className="flex">
+        <Sidebar />
+        <main className="flex flex-col items-center min-h-screen p-6 w-full">
+          <Toaster position="top-right" />
 
-        <div className="w-full max-w-2xl space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">My Tasks</h2>
-            <Button onClick={() => router.push("/tasks/create")}>
-              + Add Task
-            </Button>
-          </div>
+          <div className="w-full max-w-2xl space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">My Tasks</h2>
+              <Button onClick={() => router.push("/tasks/create")}>
+                + Add Task
+              </Button>
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Task List</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-4">
-                  <Skeleton className="h-10 w-full" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
-              ) : tasks.length === 0 ? (
-                <p className="text-center text-gray-500">No tasks found.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {tasks.map((task) => (
-                    <li
-                      key={task.id}
-                      className="p-4 border rounded-lg flex justify-between items-center"
-                    >
-                      <div className="flex-1">
-                        <h3 className="font-medium">{task.title}</h3>
-                        <p className="text-sm text-gray-500">
-                          {task.description}
-                        </p>
-                      </div>
-                      <Button
-                        variant={
-                          task.status === "completed" ? "secondary" : "default"
-                        }
-                        onClick={() => handleMarkAsComplete(task)}
-                        disabled={task.status === "completed"}
+            <Card>
+              <CardHeader>
+                <CardTitle>Task List</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                ) : tasks.length === 0 ? (
+                  <p className="text-center text-gray-500">No tasks found.</p>
+                ) : (
+                  <ul className="space-y-4">
+                    {tasks.map((task) => (
+                      <li
+                        key={task.id}
+                        className="p-4 border rounded-lg flex justify-between items-center"
                       >
-                        {task.status === "completed" ? "Completed" : "Pending"}
-                      </Button>
-                      <ActionMenu
-                        task={task}
-                        menuItems={[
-                          { label: "Edit", action: handleEdit },
-                          { label: task.status === "completed" ? "Mark as Pending" : "Mark as Completed", action: handleMarkAsComplete },
-                          { label: "Delete", action: handleDelete },
-                        ]}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium">{task.title}</h3>
+                          <p className="text-sm text-gray-500">
+                            {task.description}
+                          </p>
+                        </div>
+                        <Button
+                          variant={
+                            task.status === "completed"
+                              ? "secondary"
+                              : "default"
+                          }
+                          onClick={() => handleMarkAsComplete(task)}
+                          disabled={task.status === "completed"}
+                        >
+                          {task.status === "completed"
+                            ? "Completed"
+                            : "Pending"}
+                        </Button>
+                        <ActionMenu
+                          task={task}
+                          menuItems={[
+                            { label: "Edit", action: handleEdit },
+                            {
+                              label:
+                                task.status === "completed"
+                                  ? "Mark as Pending"
+                                  : "Mark as Completed",
+                              action: handleMarkAsComplete,
+                            },
+                            { label: "Delete", action: handleDelete },
+                          ]}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </main>
       </div>
     </ProtectedRoute>
   );

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ProtectedRoute from "@/components/protectedRoute";
+import Sidebar from "@/components/ui/sidebar";
 
 interface TaskData {
   title: string;
@@ -83,31 +84,34 @@ export default function EditTaskPage() {
 
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen w-full items-center justify-center p-6">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Edit Task</CardTitle>
-            <CardDescription>Update the task details below.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmit(onUpdate)}
-              className="space-y-6"
-            >
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input id="title" {...register("title", { required: true })} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" {...register("description")} />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Updating..." : "Update Task"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex min-h-screen w-full items-center justify-center p-6">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Edit Task</CardTitle>
+              <CardDescription>Update the task details below.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit(onUpdate)} className="space-y-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    {...register("title", { required: true })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea id="description" {...register("description")} />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Updating..." : "Update Task"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </ProtectedRoute>
   );

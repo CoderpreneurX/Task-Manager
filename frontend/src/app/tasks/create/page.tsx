@@ -16,14 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import ProtectedRoute from "@/components/protectedRoute";
+import Sidebar from "@/components/ui/sidebar";
 
 interface TaskData {
   title: string;
@@ -35,7 +29,7 @@ export default function CreateTaskPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { register, handleSubmit, setValue, reset, watch } = useForm<TaskData>({
+  const { register, handleSubmit, reset, watch } = useForm<TaskData>({
     defaultValues: {
       status: "pending", // Default status
     },
@@ -60,58 +54,45 @@ export default function CreateTaskPage() {
 
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen w-full items-center justify-center p-6">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Create a New Task</CardTitle>
-            <CardDescription>
-              Fill in the details below to add a new task.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  {...register("title", { required: true })}
-                  placeholder="Enter task title"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  {...register("description")}
-                  placeholder="Enter task details"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label>Status</Label>
-                <Select
-                  onValueChange={(value) =>
-                    setValue("status", value as "pending" | "completed")
-                  }
+      <div className="flex">
+        <Sidebar />
+        <div className="flex min-h-screen w-full items-center justify-center p-6">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Create a New Task</CardTitle>
+              <CardDescription>
+                Fill in the details below to add a new task.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    {...register("title", { required: true })}
+                    placeholder="Enter task title"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    {...register("description")}
+                    placeholder="Enter task details"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loading || !status}
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading || !status}
-              >
-                {loading ? "Creating..." : "Create Task"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                  {loading ? "Creating..." : "Create Task"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </ProtectedRoute>
   );
