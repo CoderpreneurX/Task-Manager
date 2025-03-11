@@ -42,7 +42,7 @@ exports.retrieveTask = async (req, res) => {
     return res.json(task);
   }
 
-  catch {
+  catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
