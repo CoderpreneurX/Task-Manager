@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import API from "@/utils/api";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,7 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ProtectedRoute from "@/components/protectedRoute";
 
 interface TaskData {
   title: string;
@@ -52,40 +59,60 @@ export default function CreateTaskPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create a New Task</CardTitle>
-          <CardDescription>Fill in the details below to add a new task.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input id="title" {...register("title", { required: true })} placeholder="Enter task title" />
-            </div>
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Textarea id="description" {...register("description")} placeholder="Enter task details" />
-            </div>
-            <div>
-              <Label>Status</Label>
-              <Select onValueChange={(value) => setValue("status", value as "pending" | "completed")}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button type="submit" className="w-full" disabled={loading || !status}>
-              {loading ? "Creating..." : "Create Task"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <ProtectedRoute>
+      <div className="flex min-h-screen w-full items-center justify-center p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Create a New Task</CardTitle>
+            <CardDescription>
+              Fill in the details below to add a new task.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid gap-2">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  {...register("title", { required: true })}
+                  placeholder="Enter task title"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  {...register("description")}
+                  placeholder="Enter task details"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Status</Label>
+                <Select
+                  onValueChange={(value) =>
+                    setValue("status", value as "pending" | "completed")
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || !status}
+              >
+                {loading ? "Creating..." : "Create Task"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </ProtectedRoute>
   );
 }
