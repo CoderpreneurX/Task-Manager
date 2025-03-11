@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner"; // Import Sonner's toast
 import API from "@/utils/api";
-import { cn } from "@/lib/utils";
 import Button from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +25,22 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Validate token with a call to the backend
+      API.post("/auth/validate-token/", { token })
+        .then(() => {
+          router.push("/tasks"); // Redirect to tasks if the token is valid
+        })
+        .catch(() => {
+          localStorage.removeItem("token"); // Remove invalid token from localStorage
+          // router.push("/login"); // Redirect to login page if the token is invalid
+        });
+    }
+  }, [router]);
+
   const { register, handleSubmit } = useForm<LoginData>();
 
   const onSubmit = async (data: LoginData) => {
@@ -35,18 +50,24 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       const response = await API.post("/auth/login", data);
       localStorage.setItem("token", response.data.token);
       toast.success("Login Successful! Redirecting..."); // Sonner success toast
-      router.push("/dashboard");
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : err.message
-      ); // Sonner error toast
+      router.push("/tasks");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message); // Sonner error toast for Error objects
+      } else if (err && typeof err === "object" && "message" in err) {
+        // If it's a JSON object with a "message" property
+        const { message } = err as { message: string }; // Type assertion for JSON object
+        toast.error(message); // Sonner error toast for JSON object with "message"
+      } else {
+        toast.error("An unexpected error occurred."); // Fallback message
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={`flex flex-col gap-6 ${className || ""}`} {...props}>
       <Toaster position="top-right" />
       <Card>
         <CardHeader>
@@ -101,7 +122,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           </form>
         </CardContent>
       </Card>
-      {/* <Toaster /> */}
     </div>
   );
 }
