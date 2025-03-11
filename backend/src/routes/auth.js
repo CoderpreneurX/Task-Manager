@@ -84,4 +84,23 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post('/validate-token', (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+
+  try {
+    // Verify the token using the secret key
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // If the token is valid, return a success message
+    return res.status(200).json({ message: "Token is valid", user: decoded });
+  } catch (err) {
+    // If the token is invalid or expired, send an error response
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+});
+
 module.exports = router;
