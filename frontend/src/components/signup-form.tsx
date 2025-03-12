@@ -49,7 +49,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
     try {
       await API.post("/auth/register", data);
       toast.success("Registration Successful! Redirecting..."); // Sonner success toast
-      router.push("/login");
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
     } catch (err: unknown) {
       if (err instanceof Error) {
         toast.error(err.message); // Sonner error toast for Error objects
