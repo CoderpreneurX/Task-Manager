@@ -16,14 +16,25 @@ exports.createTask = async (req, res) => {
 exports.getTasks = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
-    const whereClause = { user_id: req.user.userId };
+    const whereClause = {};
+
+    if (req.user.role === "user") {
+      whereClause.user_id = req.user.userId; // Restrict to only the logged-in user's tasks
+    }
+
     if (status) whereClause.status = status;
-    
+
     const tasks = await Task.findAndCountAll({
       where: whereClause,
-      limit,
-      offset: (page - 1) * limit,
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
       order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User, // Include the user details
+          attributes: ["id", "email"], // Specify only required user fields
+        },
+      ],
     });
 
     return res.json({ total: tasks.count, tasks: tasks.rows });
