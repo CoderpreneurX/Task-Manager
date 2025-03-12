@@ -115,41 +115,52 @@ export default function TasksPage() {
                     {tasks.map((task) => (
                       <li
                         key={task.id}
-                        className="p-4 border rounded-lg flex justify-between items-center"
+                        className="p-4 border rounded-lg flex justify-between items-center space-x-2"
                       >
-                        <div className="flex-1">
-                          <h3 className="font-medium">{task.title}</h3>
-                          <p className="text-sm text-gray-500">
+                        <div className="flex-1 w-0">
+                          <h3 className="font-medium truncate">{task.title}</h3>
+                          <p className="text-sm text-gray-500 w-full truncate">
                             {task.description}
                           </p>
                         </div>
-                        <Button
-                          variant={
-                            task.status === "completed"
-                              ? "secondary"
-                              : "default"
-                          }
-                          onClick={() => handleMarkAsComplete(task)}
-                          disabled={task.status === "completed"}
-                        >
-                          {task.status === "completed"
-                            ? "Completed"
-                            : "Pending"}
-                        </Button>
-                        <ActionMenu
-                          task={task}
-                          menuItems={[
-                            { label: "Edit", action: handleEdit },
-                            {
-                              label:
-                                task.status === "completed"
-                                  ? "Mark as Pending"
-                                  : "Mark as Completed",
-                              action: handleMarkAsComplete,
-                            },
-                            { label: "Delete", action: handleDelete },
-                          ]}
-                        />
+
+                        <div className="flex-shrink-0">
+                          {" "}
+                          {/* Prevent button from overflowing */}
+                          <Button
+                            variant={
+                              task.status === "completed"
+                                ? "secondary"
+                                : "default"
+                            }
+                            onClick={() => handleMarkAsComplete(task)}
+                            disabled={task.status === "completed"}
+                            className="w-auto" // Optional: You can set a specific width for the button if needed
+                          >
+                            {task.status === "completed"
+                              ? "Completed"
+                              : "Pending"}
+                          </Button>
+                        </div>
+
+                        <div className="flex-shrink-0">
+                          {" "}
+                          {/* Prevent action menu from overflowing */}
+                          <ActionMenu
+                            task={task}
+                            menuItems={[
+                              { label: "Edit", action: handleEdit },
+                              {
+                                label:
+                                  task.status === "completed"
+                                    ? "Mark as Pending"
+                                    : "Mark as Completed",
+                                action: handleMarkAsComplete,
+                              },
+                              { label: "Delete", action: handleDelete },
+                            ]}
+                          />
+                        </div>
                       </li>
                     ))}
                   </ul>
