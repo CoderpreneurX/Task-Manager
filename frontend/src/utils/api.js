@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { useRouter } from "next/navigation";
 import {push} from "next/navigation";
 
 const API = axios.create({
