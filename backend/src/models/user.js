@@ -7,12 +7,17 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Task, { foreignKey: "user_id" });
     }
   }
+
   User.init(
     {
       id: {
-        type: DataTypes.INTEGER, // 🔥 Change UUID to INTEGER
-        autoIncrement: true, // Auto-increment primary key
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
+      },
+      full_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
@@ -22,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      role: {
+        type: DataTypes.ENUM("user", "admin"), // Only "user" or "admin" allowed
+        allowNull: false,
+        defaultValue: "user",
       },
       isEmailVerified: {
         type: DataTypes.BOOLEAN,
@@ -41,5 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+
   return User;
 };
