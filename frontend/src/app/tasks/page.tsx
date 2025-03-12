@@ -30,8 +30,7 @@ export default function TasksPage() {
         const response = await API.get("/tasks");
         console.log("API Response:", response.data);
         setTasks(response.data.tasks);
-      } catch (err) {
-        console.error("Error fetching tasks:", err);
+      } catch {
         toast.error("Failed to load tasks.");
       } finally {
         setLoading(false);
