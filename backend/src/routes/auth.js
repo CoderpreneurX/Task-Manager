@@ -16,13 +16,19 @@ const JWT_SECRET = settings.JWT_SECRET;
 // @access  Public
 router.post("/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { full_name, email, password } = req.body;
 
     // Validate input
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Email and password are required" });
+    }
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Full name is required" });
     }
 
     // Check if user already exists
@@ -37,6 +43,7 @@ router.post("/register", async (req, res) => {
 
     // Create user
     const user = await User.create({
+      full_name,
       email,
       password: hashedPassword,
     });
