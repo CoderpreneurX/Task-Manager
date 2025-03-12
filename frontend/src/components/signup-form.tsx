@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 
 // Define Zod Schema for validation
 const signupSchema = z.object({
+  full_name: z.string().min(4, "Full name must be atleast 4 characters"),
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z
     .string()
@@ -99,6 +100,18 @@ export function SignupForm({
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
+            <div className="grid gap-3">
+                <Label htmlFor="email">Full Name</Label>
+                <Input
+                  id="full_name"
+                  type="text"
+                  placeholder="Morty Davidson"
+                  {...register("full_name")}
+                />
+                {errors.full_name && (
+                  <p className="text-red-500 text-sm">{errors.full_name.message}</p>
+                )}
+              </div>
               {/* Email Field */}
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
