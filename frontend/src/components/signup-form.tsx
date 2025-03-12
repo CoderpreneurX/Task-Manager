@@ -16,12 +16,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-interface LoginData {
+interface SignupData {
   email: string;
   password: string;
 }
 
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -32,7 +32,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       // Validate token with a call to the backend
       API.post("/auth/validate-token/", { token })
         .then(() => {
-          router.push("/tasks"); // Redirect to tasks if the token is valid
+          router.push("/"); // Redirect to tasks if the token is valid
         })
         .catch(() => {
           localStorage.removeItem("token"); // Remove invalid token from localStorage
@@ -41,16 +41,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     }
   }, [router]);
 
-  const { register, handleSubmit } = useForm<LoginData>();
+  const { register, handleSubmit } = useForm<SignupData>();
 
-  const onSubmit = async (data: LoginData) => {
+  const onSubmit = async (data: SignupData) => {
     setLoading(true);
 
     try {
-      const response = await API.post("/auth/login", data);
-      localStorage.setItem("token", response.data.token);
-      toast.success("Login Successful! Redirecting..."); // Sonner success toast
-      router.push("/tasks");
+      await API.post("/auth/register", data);
+      toast.success("Registration Successful! Redirecting..."); // Sonner success toast
+      router.push("/login");
     } catch (err: unknown) {
       if (err instanceof Error) {
         toast.error(err.message); // Sonner error toast for Error objects
@@ -71,7 +70,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       <Toaster position="top-right" />
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Create your account</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
@@ -89,15 +88,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 />
               </div>
               <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
                 <Input
                   id="password"
                   type="password"
@@ -106,17 +96,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Logging in..." : "Login"}
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
+                  {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a onClick={() => {router.push('/signup')}} className="underline cursor-pointer underline-offset-4">
-                Sign up
+              Already have an account?{" "}
+              <a onClick={() => {router.push('/login')}} className="underline cursor-pointer underline-offset-4">
+                Login
               </a>
             </div>
           </form>
