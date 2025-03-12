@@ -14,7 +14,7 @@ interface SidebarItemProps {
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [sidebarWidth, setSidebarWidth] = useState<string>("256px"); // Default width
+  const [sidebarWidth, setSidebarWidth] = useState<string>("64px"); // Default width
 
   // Detect screen width and update `isMobile` & `sidebarWidth`
   useEffect(() => {
